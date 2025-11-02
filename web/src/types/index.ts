@@ -49,7 +49,8 @@ export interface DecisionAction {
   order_id: number;
   timestamp: string;
   success: boolean;
-  error: string;
+  confidence?: number;
+  error?: string;
 }
 
 // 决策记录
@@ -90,4 +91,42 @@ export interface Statistics {
   failed_cycles: number;
   total_open_positions: number;
   total_close_positions: number;
+}
+
+export interface KlinePoint {
+  open_time: number;
+  close_time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface AISignal {
+  timestamp: string;
+  summary_cn: string;
+  direction: string;
+  confidence?: number;
+  links?: string[];
+  price_snapshot?: unknown;
+  model_name?: string;
+  event_type?: string;
+  assets?: string[];
+  asset_names?: string[];
+}
+
+export interface TradeEvent {
+  symbol: string;
+  side: string;
+  action: string;
+  timestamp: string;
+  price: number;
+  quantity: number;
+  leverage: number;
+  confidence?: number;
+  cycle_number: number;
+  pnl?: number;
+  pnl_pct?: number;
+  duration?: string;
 }

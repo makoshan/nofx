@@ -4,6 +4,7 @@ import { api } from './lib/api';
 import { EquityChart } from './components/EquityChart';
 import { CompetitionPage } from './components/CompetitionPage';
 import AILearning from './components/AILearning';
+import { MarketKline } from './components/MarketKline';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { t, type Language } from './i18n/translations';
 import type {
@@ -432,6 +433,9 @@ function TraderDetailsPage({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* 左侧：图表 + 持仓 */}
         <div className="space-y-6">
+          {/* Market K-line Visualization */}
+          <MarketKline traderId={selectedTrader.trader_id} />
+
           {/* Equity Chart */}
           <div className="animate-slide-in" style={{ animationDelay: '0.1s' }}>
             <EquityChart traderId={selectedTrader.trader_id} />

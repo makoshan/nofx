@@ -1087,6 +1087,7 @@ Each decision cycle (default 3 minutes), the system executes the following intel
 ### 2. Details Page
 
 - **Equity Curve**: Historical trend chart (USD/percentage toggle)
+- **Market K-line Visualizer**: SOL/BTC/ETH candlesticks with AI signal badges and trade markers
 - **Statistics**: Total cycles, success/fail, open/close stats
 - **Position Table**: All position details (entry price, current price, P/L%, liquidation price)
 - **AI Decision Logs**: Recent decision records (expandable CoT)

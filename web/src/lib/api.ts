@@ -6,6 +6,9 @@ import type {
   Statistics,
   TraderInfo,
   CompetitionData,
+  KlinePoint,
+  AISignal,
+  TradeEvent,
 } from '../types';
 
 const API_BASE = '/api';
@@ -108,6 +111,75 @@ export const api = {
       : `${API_BASE}/performance`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('获取AI学习数据失败');
+    return res.json();
+  },
+
+  async getMarketKline(params: {
+    symbol?: string;
+    interval?: string;
+    limit?: number;
+  }): Promise<KlinePoint[]> {
+    const { symbol = 'SOL', interval = '3m', limit = 500 } = params ?? {};
+    const search = new URLSearchParams({
+      symbol,
+      interval,
+      limit: String(limit),
+    });
+
+    const res = await fetch(`${API_BASE}/market/kline?${search.toString()}`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('获取K线数据失败');
+    return res.json();
+  },
+
+  async getAISignals(params: {
+    symbol?: string;
+    limit?: number;
+    since?: string;
+  }): Promise<AISignal[]> {
+    const { symbol = 'SOL', limit = 50, since } = params ?? {};
+    const search = new URLSearchParams({
+      symbol,
+      limit: String(limit),
+    });
+    if (since) {
+      search.set('since', since);
+    }
+
+    const res = await fetch(`${API_BASE}/ai-signals?${search.toString()}`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('获取AI新闻信号失败');
+    return res.json();
+  },
+
+  async getTrades(params: {
+    symbol?: string;
+    traderId?: string;
+    limit?: number;
+    from?: string;
+    to?: string;
+  }): Promise<TradeEvent[]> {
+    const { symbol = 'SOL', traderId, limit = 200, from, to } = params ?? {};
+    const search = new URLSearchParams({
+      symbol,
+      limit: String(limit),
+    });
+    if (traderId) {
+      search.set('trader_id', traderId);
+    }
+    if (from) {
+      search.set('from', from);
+    }
+    if (to) {
+      search.set('to', to);
+    }
+
+    const res = await fetch(`${API_BASE}/trades?${search.toString()}`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('获取交易时间线失败');
     return res.json();
   },
 };

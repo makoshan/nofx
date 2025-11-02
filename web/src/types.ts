@@ -50,6 +50,7 @@ export interface DecisionAction {
   order_id: number;
   timestamp: string;
   success: boolean;
+  confidence?: number;
   error?: string;
 }
 
@@ -107,4 +108,42 @@ export interface CompetitionTraderData {
 export interface CompetitionData {
   traders: CompetitionTraderData[];
   count: number;
+}
+
+export interface KlinePoint {
+  open_time: number;
+  close_time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface AISignal {
+  timestamp: string;
+  summary_cn: string;
+  direction: string;
+  confidence?: number;
+  links?: string[];
+  price_snapshot?: unknown;
+  model_name?: string;
+  event_type?: string;
+  assets?: string[];
+  asset_names?: string[];
+}
+
+export interface TradeEvent {
+  symbol: string;
+  side: string;
+  action: string;
+  timestamp: string;
+  price: number;
+  quantity: number;
+  leverage: number;
+  confidence?: number;
+  cycle_number: number;
+  pnl?: number;
+  pnl_pct?: number;
+  duration?: string;
 }
