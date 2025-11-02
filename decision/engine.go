@@ -548,6 +548,12 @@ func validateDecision(d *Decision, accountEquity float64, btcEthLeverage, altcoi
 
 	// 开仓操作必须提供完整参数
 	if d.Action == "open_long" || d.Action == "open_short" {
+		// ⚠️ 首先检查账户净值是否有效（必须大于最小有效值）
+		const minValidEquity = 0.01 // 最小有效账户净值（0.01 USDT）
+		if accountEquity < minValidEquity {
+			return fmt.Errorf("账户净值无效(%.2f USDT < %.2f USDT)，无法开仓。请检查账户余额获取是否正常，或账户是否已初始化", accountEquity, minValidEquity)
+		}
+
 		// 根据币种使用配置的杠杆上限
 		maxLeverage := altcoinLeverage          // 山寨币使用配置的杠杆
 		maxPositionValue := accountEquity * 1.5 // 山寨币最多1.5倍账户净值
