@@ -535,6 +535,22 @@ func Normalize(symbol string) string {
 	return symbol + "USDT"
 }
 
+// GetKlines 对外暴露的K线获取方法，带符号标准化与安全限制
+func GetKlines(symbol, interval string, limit int) ([]Kline, error) {
+	symbol = Normalize(symbol)
+	if interval == "" {
+		interval = "3m"
+	}
+	if limit <= 0 {
+		limit = 500
+	}
+	if limit > 1500 {
+		limit = 1500
+	}
+
+	return getKlines(symbol, interval, limit)
+}
+
 // parseFloat 解析float值
 func parseFloat(v interface{}) (float64, error) {
 	switch val := v.(type) {

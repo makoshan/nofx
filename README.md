@@ -289,6 +289,18 @@ cp config.json.example config.json
 nano config.json  # or use any editor
 ```
 
+> 💡 若需启用 AI 新闻信号与交易可视化接口，请在 `config.json` 中补充以下字段（示例见 `config.json.example`）：
+>
+> ```json
+> "supabase_url": "https://your-project-id.supabase.co",
+> "supabase_key": "your_supabase_service_role_key",
+> "supabase_schema": "public",
+> "supabase_ai_signals_table": "ai_signals"
+> ```
+>
+> - 建议使用 **Service Role** Key 以确保 PostgREST 读取权限
+> - 若表名或 schema 不同，可通过 `supabase_ai_signals_table` 与 `supabase_schema` 覆写
+
 #### Step 2: One-Click Start
 ```bash
 # Option 1: Use convenience script (Recommended)
@@ -1094,6 +1106,14 @@ Each decision cycle (default 3 minutes), the system executes the following intel
 ```bash
 GET /api/competition          # Competition leaderboard (all traders)
 GET /api/traders              # Trader list
+```
+
+### Market Visualization
+
+```bash
+GET /api/market/kline?symbol=SOL&interval=3m&limit=500  # Binance futures K-line (cache 30s)
+GET /api/ai-signals?symbol=SOL&limit=50                 # AI news signals from Supabase
+GET /api/trades?symbol=SOL&trader_id=xxx               # Trade execution timeline (supports from/to)
 ```
 
 ### Single Trader Related

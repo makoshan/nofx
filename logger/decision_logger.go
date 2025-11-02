@@ -54,6 +54,7 @@ type DecisionAction struct {
 	Quantity  float64   `json:"quantity"`  // 数量
 	Leverage  int       `json:"leverage"`  // 杠杆（开仓时）
 	Price     float64   `json:"price"`     // 执行价格
+	Confidence int      `json:"confidence"`// 决策信心度（0-100，可选）
 	OrderID   int64     `json:"order_id"`  // 订单ID
 	Timestamp time.Time `json:"timestamp"` // 执行时间
 	Success   bool      `json:"success"`   // 是否成功

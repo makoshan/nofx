@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"nofx/config"
 	"nofx/manager"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,10 +16,13 @@ type Server struct {
 	router        *gin.Engine
 	traderManager *manager.TraderManager
 	port          int
+	cfg           *config.Config
+	klineCache    *klineCache
+	supabase      *supabaseClient
 }
 
 // NewServer 创建API服务器
-func NewServer(traderManager *manager.TraderManager, port int) *Server {
+func NewServer(traderManager *manager.TraderManager, cfg *config.Config) *Server {
 	// 设置为Release模式（减少日志输出）
 	gin.SetMode(gin.ReleaseMode)
 
@@ -29,7 +34,10 @@ func NewServer(traderManager *manager.TraderManager, port int) *Server {
 	s := &Server{
 		router:        router,
 		traderManager: traderManager,
-		port:          port,
+		port:          cfg.APIServerPort,
+		cfg:           cfg,
+		klineCache:    newKlineCache(30 * time.Second),
+		supabase:      newSupabaseClient(cfg),
 	}
 
 	// 设置路由
@@ -64,6 +72,9 @@ func (s *Server) setupRoutes() {
 	{
 		// 竞赛总览
 		api.GET("/competition", s.handleCompetition)
+		api.GET("/market/kline", s.handleMarketKline)
+		api.GET("/ai-signals", s.handleAISignals)
+		api.GET("/trades", s.handleTrades)
 
 		// Trader列表
 		api.GET("/traders", s.handleTraderList)
@@ -407,6 +418,9 @@ func (s *Server) Start() error {
 	log.Printf("🌐 API服务器启动在 http://localhost%s", addr)
 	log.Printf("📊 API文档:")
 	log.Printf("  • GET  /api/competition      - 竞赛总览（对比所有trader）")
+	log.Printf("  • GET  /api/market/kline?symbol=SOL&interval=3m&limit=500 - 指定币种K线行情")
+	log.Printf("  • GET  /api/ai-signals?symbol=SOL&limit=50 - AI新闻信号")
+	log.Printf("  • GET  /api/trades?symbol=SOL - 交易买卖点时间线")
 	log.Printf("  • GET  /api/traders          - Trader列表")
 	log.Printf("  • GET  /api/status?trader_id=xxx     - 指定trader的系统状态")
 	log.Printf("  • GET  /api/account?trader_id=xxx    - 指定trader的账户信息")

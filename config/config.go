@@ -62,6 +62,10 @@ type Config struct {
 	MaxDrawdown        float64        `json:"max_drawdown"`
 	StopTradingMinutes int            `json:"stop_trading_minutes"`
 	Leverage           LeverageConfig `json:"leverage"` // 杠杆配置
+	SupabaseURL        string         `json:"supabase_url"`
+	SupabaseKey        string         `json:"supabase_key"`
+	SupabaseSchema     string         `json:"supabase_schema"`
+	SupabaseSignalsTable string       `json:"supabase_ai_signals_table"`
 }
 
 // LoadConfig 从文件加载配置
@@ -93,6 +97,20 @@ func LoadConfig(filename string) (*Config, error) {
 			"ADAUSDT",
 			"HYPEUSDT",
 		}
+	}
+
+	// 设置Supabase默认值
+	if config.SupabaseURL != "" && config.SupabaseKey != "" {
+		if config.SupabaseSchema == "" {
+			config.SupabaseSchema = "public"
+		}
+		if config.SupabaseSignalsTable == "" {
+			config.SupabaseSignalsTable = "ai_signals"
+		}
+	} else {
+		// 如果未完整配置Supabase，则清空所有辅助字段以避免误用
+		config.SupabaseSchema = ""
+		config.SupabaseSignalsTable = ""
 	}
 
 	// 验证配置
@@ -176,6 +194,19 @@ func (c *Config) Validate() error {
 
 	if c.APIServerPort <= 0 {
 		c.APIServerPort = 8080 // 默认8080端口
+	}
+
+	// Supabase配置需要成对出现
+	if (c.SupabaseURL != "" && c.SupabaseKey == "") || (c.SupabaseURL == "" && c.SupabaseKey != "") {
+		return fmt.Errorf("supabase_url 和 supabase_key 需要同时配置或同时留空")
+	}
+	if c.SupabaseURL != "" {
+		if c.SupabaseSchema == "" {
+			c.SupabaseSchema = "public"
+		}
+		if c.SupabaseSignalsTable == "" {
+			c.SupabaseSignalsTable = "ai_signals"
+		}
 	}
 
 	// 设置杠杆默认值（适配币安子账户限制，最大5倍）

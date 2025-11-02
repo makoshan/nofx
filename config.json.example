@@ -78,6 +78,10 @@
   "coin_pool_api_url": "",
   "oi_top_api_url": "",
   "api_server_port": 8080,
+  "supabase_url": "https://your-project-id.supabase.co",
+  "supabase_key": "your_supabase_service_role_key",
+  "supabase_schema": "public",
+  "supabase_ai_signals_table": "ai_signals",
   "max_daily_loss": 10.0,
   "max_drawdown": 20.0,
   "stop_trading_minutes": 60

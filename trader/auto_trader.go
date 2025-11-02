@@ -351,6 +351,7 @@ func (at *AutoTrader) runCycle() error {
 			Quantity:  0,
 			Leverage:  d.Leverage,
 			Price:     0,
+			Confidence: d.Confidence,
 			Timestamp: time.Now(),
 			Success:   false,
 		}
